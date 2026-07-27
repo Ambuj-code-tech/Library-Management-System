@@ -3,16 +3,16 @@
 #include <string>
 
 #include "Book.h"
-using namespace std;
+
 // the default constructor
 Book::Book():
     id(0), title(""), author(""), category(""), available(true) {}
 
 // prametrized constructor
 Book::Book(int id,
-        const string& title,
-        const string& author,
-        const string& category,
+        const std::string& title,
+        const std::string& author,
+        const std::string& category,
         bool available):
     
     id(id), title(title), author(author), category(category), available(available) {}
@@ -20,11 +20,11 @@ Book::Book(int id,
 // display
 void Book::display() const
 {
-    cout << left
-              << setw(8) << id
-              << setw(30)<< title
-              << setw(25)<< author
-              << setw(20) << category
+    std::cout << std::left
+              << std::setw(8)  << id
+              << std::setw(30) << title
+              << std::setw(25) << author
+              << std::setw(20) << category
               << (available ? "Available" : "Borrowed")
               << '\n';
 }
@@ -33,15 +33,15 @@ int Book::getId() const
 {
     return id;
 }
-const string& Book::getTitle() const
+const std::string& Book::getTitle() const
 {
     return title;
 }
-const string& Book::getAuthor() const
+const std::string& Book::getAuthor() const
 {
     return author;
 }
-const string& Book::getCategory() const
+const std::string& Book::getCategory() const
 {
     return category;
 }
