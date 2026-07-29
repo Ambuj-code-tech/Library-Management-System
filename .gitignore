@@ -1,0 +1,16 @@
+# Executables
+*.exe
+*.out
+
+# Object files
+*.o
+*.obj
+
+# Debug files
+*.pdb
+
+# VS Code settings (optional)
+.vscode/
+
+# Build folders
+build/

@@ -68,7 +68,9 @@ void User::display() const
         std::cout << borrowedBooksId[i];
         if (i < n-1)
         {
-            std::cout << ', ';
+            std::cout << ", ";
         }
     }
+
+    std::cout << '\n';
 }
