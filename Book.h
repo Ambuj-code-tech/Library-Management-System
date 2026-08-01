@@ -21,7 +21,7 @@ public:
         const std::string& category,
         bool available = true);
 
-    int getId() const;
+    int getBookId() const;
     const std::string& getTitle() const;
     const std::string& getAuthor() const;
     const std::string& getCategory() const;

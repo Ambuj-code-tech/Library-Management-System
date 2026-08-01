@@ -14,7 +14,7 @@ User::User(int userId, const std::string& username):
     userId(userId), username(username), borrowedBooksId() {}
 
 // getter functions
-int User::getId() const
+int User::getUserId() const
 {
     return userId;
 }
@@ -30,7 +30,10 @@ const std::vector<int>& User::getBorrowedBooks() const
 // setter functions
 void User::borrowBook(int bookId)
 {
-    borrowedBooksId.push_back(bookId);
+    if (std::find(borrowedBooksId.begin(), borrowedBooksId.end(), bookId) == borrowedBooksId.end())
+    {
+        borrowedBooksId.push_back(bookId);
+    }
 }
 void User::returnBook(int bookId)
 {
@@ -55,7 +58,7 @@ void User::display() const
     std::cout << std::left
               << std::setw(18) << "User ID:" << userId << '\n'
               << std::setw(18) << "Username:" << username << '\n'
-              << std::setw(18) << "Borrowed Books:";
+              << std::setw(18) << "Borrowed Books:\n";
 
     if (borrowedBooksId.empty())
     {

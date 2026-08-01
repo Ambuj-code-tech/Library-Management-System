@@ -29,7 +29,7 @@ void Book::display() const
               << '\n';
 }
 
-int Book::getId() const
+int Book::getBookId() const
 {
     return id;
 }

@@ -15,7 +15,7 @@ public:
     User();
     User(int id, const std::string& username);
 
-    int getId() const;
+    int getUserId() const;
     const std::string& getUsername() const;
     const std::vector<int>& getBorrowedBooks() const;
 

@@ -26,8 +26,7 @@ public:
         int recordId,
         int userId,
         int bookId,
-        const Date& borrowDate,
-        const Date& dueDate
+        const Date& borrowDate
     );
 
     // getters
@@ -51,6 +50,8 @@ public:
         const Date& today,
         double finePerDay
     ) const;
+
+    void display() const;
 };
 
 #endif

@@ -1,15 +1,26 @@
 #include <chrono>
+#include <iostream>
+#include <iomanip>
+
 #include "BorrowRecord.h"
+
+constexpr int BorrowPeriod = 14;
 
 // parametrized constructor
 BorrowRecord::BorrowRecord(
     int recordId,
     int userId,
     int bookId,
-    const Date& borrowDate,
-    const Date& dueDate
+    const Date& borrowDate
 ):
-    recordId(recordId), userId(userId), bookId(bookId), borrowDate(borrowDate), dueDate(dueDate) {}
+    recordId(recordId), 
+    userId(userId), 
+    bookId(bookId), 
+    borrowDate(borrowDate), 
+    dueDate(dueDate) 
+    {
+        dueDate = Date{SysDays(borrowDate) + std::chrono::days{BorrowPeriod}};
+    }
 
 // getters
 int BorrowRecord::getRecordId() const
@@ -72,4 +83,24 @@ double BorrowRecord::calculateFine(const Date& today, double finePerDay) const
     auto overdueDays = SysDays(today) - SysDays(dueDate);
 
     return overdueDays.count() * (double)finePerDay;
+}
+
+void BorrowRecord::display() const
+{
+    std::cout << std::left
+              << std::setw(10) << recordId
+              << std::setw(10) << userId
+              << std::setw(10) << bookId;
+
+    std::cout << std::setfill('0');
+
+    std::cout << std::setw(4) << static_cast<int>(borrowDate.year()) << '-'
+              << std::setw(2) << static_cast<unsigned>(borrowDate.month()) << '-'
+              << std::setw(2) << static_cast<unsigned>(borrowDate.day()) << "    ";
+
+    std::cout << std::setw(4) << static_cast<int>(dueDate.year()) << '-'
+              << std::setw(2) << static_cast<unsigned>(dueDate.month()) << '-'
+              << std::setw(2) << static_cast<unsigned>(dueDate.day());
+
+    std::cout << std::setfill(' ') << '\n';
 }
