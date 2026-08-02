@@ -38,6 +38,10 @@ public:
 
     void displayAllUsers() const;
 
+    void resetBooks();
+    void resetUsers();
+    void resetBorrowRecords();
+
     // Borrowing
     bool borrowBook(int userId, int bookId);
     bool returnBook(int userId, int bookId);

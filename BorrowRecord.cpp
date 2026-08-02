@@ -13,14 +13,12 @@ BorrowRecord::BorrowRecord(
     int bookId,
     const Date& borrowDate
 ):
-    recordId(recordId), 
-    userId(userId), 
-    bookId(bookId), 
-    borrowDate(borrowDate), 
-    dueDate(dueDate) 
-    {
-        dueDate = Date{SysDays(borrowDate) + std::chrono::days{BorrowPeriod}};
-    }
+    recordId(recordId),
+    userId(userId),
+    bookId(bookId),
+    borrowDate(borrowDate),
+    dueDate(SysDays(borrowDate) + std::chrono::days{BorrowPeriod})
+{}
 
 // getters
 int BorrowRecord::getRecordId() const

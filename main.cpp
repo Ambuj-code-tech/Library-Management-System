@@ -17,7 +17,8 @@ void displayMenu()
         << "9.  Remove User\n"
         << "10. Display Users\n"
         << "11. Reset User Data\n"
-        << "12. Exit\n"
+        << "12. Display Borrow Records\n"
+        << "13. Exit\n"
         << "Enter your choice: ";
 }
 
@@ -26,9 +27,9 @@ int main()
     // create library object
     Library lib;
 
-    lib.loadBooks("books.txt");
-    lib.loadUsers("users.txt");
-    lib.loadBorrowRecords("records.txt");
+    lib.loadBooks("books.csv");
+    lib.loadUsers("users.csv");
+    lib.loadBorrowRecords("records.csv");
 
     while (true)
     {
@@ -53,6 +54,12 @@ int main()
                 std::cin >> id;
                 std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
 
+                if (lib.findBookById(id) != nullptr)
+                {
+                    std::cout << "Book ID already exists. Please use a different ID.\n";
+                    break;
+                }
+
                 std::cout << "Title: ";
                 getline(std::cin, title);
 
@@ -68,6 +75,11 @@ int main()
                 // Add it to the library
                 lib.addBook(newBook);
 
+                if (!lib.saveBooks("books.csv"))
+                {
+                    std::cout << "Warning: failed to save books to books.csv.\n";
+                }
+
                 std::cout << "Book added successfully!\n";
 
                 break;
@@ -79,12 +91,14 @@ int main()
                 std::cout << "Book Id: ";
                 std::cin >> bookId;
 
-                if(!lib.removeBook(bookId))
+                if (lib.removeBook(bookId))
                 {
-                    std::cout << "Book Removed Successfully.\n";
+                    lib.saveBooks("books.csv");
+                    std::cout << "Book removed successfully.\n";
                 }
-                else{
-                    std::cout << "Cannot remove a borrowed book.\n";
+                else
+                {
+                    std::cout << "Cannot remove a borrowed book or book not found.\n";
                 }
 
                 break;
@@ -118,6 +132,9 @@ int main()
 
                 if(lib.borrowBook(userId, bookId))
                 {
+                    lib.saveBooks("books.csv");
+                    lib.saveUsers("users.csv");
+                    lib.saveBorrowRecords("records.csv");
                     std::cout << "Book borrowed successfully!\n";
                 }
 
@@ -136,6 +153,9 @@ int main()
 
                 if(lib.returnBook(userId, bookId))
                 {
+                    lib.saveBooks("books.csv");
+                    lib.saveUsers("users.csv");
+                    lib.saveBorrowRecords("records.csv");
                     std::cout << "Book returned successfully!\n";
                 }
 
@@ -148,7 +168,12 @@ int main()
             }
             case 7:  // Reset Book Data
             {
-                //...
+                lib.resetBooks();
+                lib.resetBorrowRecords();
+                lib.saveBooks("books.csv");
+                lib.saveBorrowRecords("records.csv");
+                std::cout << "Book data reset successfully.\n";
+                break;
             }
             case 8:  // Register User
             {
@@ -157,13 +182,17 @@ int main()
 
                 std::cout << "User ID: ";
                 std::cin >> userId;
+                std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
 
                 std::cout << "Username: ";
-                std::cin >> username;
+                std::getline(std::cin, username);
 
                 User newUser(userId, username);
 
                 lib.addUser(newUser);
+                lib.saveUsers("users.csv");
+                std::cout << "User registered successfully!\n";
+                break;
             }
             case 9:  // Remove User
             {
@@ -173,7 +202,10 @@ int main()
                 std::cin >> userId;
 
                 if(lib.removeUser(userId))
-                    std::cout << "User deregestered successfully.\n";
+                {
+                    lib.saveUsers("users.csv");
+                    std::cout << "User deregistered successfully.\n";
+                }
                 
                 break;
             }
@@ -184,10 +216,23 @@ int main()
             }
             case 11:  // Reset User Data
             {
-                //...
+                lib.resetUsers();
+                lib.resetBorrowRecords();
+                lib.saveUsers("users.csv");
+                lib.saveBorrowRecords("records.csv");
+                std::cout << "User data reset successfully.\n";
+                break;
             }
-            case 12:  // Exit
+            case 12:  // Display Borrow Records
             {
+                lib.displayBorrowRecords();
+                break;
+            }
+            case 13:  // Exit
+            {
+                lib.saveBooks("books.csv");
+                lib.saveUsers("users.csv");
+                lib.saveBorrowRecords("records.csv");
                 return 0;
             }
         }

@@ -3,6 +3,7 @@
 #include <iomanip>
 #include <sstream>
 #include <string>
+#include <chrono>
 
 #include "Library.h"
 
@@ -144,6 +145,22 @@ void Library::displayAllUsers() const
         std::cout << sl++ << '\n';
         user.display();
     }
+}
+
+void Library::resetBooks()
+{
+    books.clear();
+}
+
+void Library::resetUsers()
+{
+    users.clear();
+}
+
+void Library::resetBorrowRecords()
+{
+    borrowRecords.clear();
+    nextRecordId = 1;
 }
 
 // Borrowing
@@ -483,12 +500,153 @@ bool Library::saveUsers(const std::string& filename) const
     return true;
 }
 
-bool Library::loadBorrowRecords(const std::string&)
+bool Library::loadBorrowRecords(const std::string& filename)
 {
-    return false;
+    std::ifstream file(filename);
+
+    if (!file.is_open())
+    {
+        std::cout << "Unable to open " << filename << ".\n";
+        return false;
+    }
+
+    borrowRecords.clear();
+    nextRecordId = 1;
+
+    std::string line;
+    if (!std::getline(file, line))
+    {
+        file.close();
+        return true;
+    }
+
+    auto parseDate = [](const std::string& str, Date& date) {
+        if (str.empty())
+            return false;
+
+        int year = 0;
+        unsigned month = 0;
+        unsigned day = 0;
+        char dash1 = '\0';
+        char dash2 = '\0';
+
+        std::stringstream ss(str);
+        if (!(ss >> year >> dash1 >> month >> dash2 >> day))
+            return false;
+
+        if (dash1 != '-' || dash2 != '-')
+            return false;
+
+        date = Date{std::chrono::year{year}, std::chrono::month{month}, std::chrono::day{day}};
+        return true;
+    };
+
+    int maxRecordId = 0;
+
+    while (std::getline(file, line))
+    {
+        if (line.empty())
+        {
+            continue;
+        }
+
+        std::stringstream ss(line);
+        std::string recordIdStr;
+        std::string userIdStr;
+        std::string bookIdStr;
+        std::string borrowDateStr;
+        std::string returnedStr;
+        std::string returnDateStr;
+
+        if (!std::getline(ss, recordIdStr, ',') ||
+            !std::getline(ss, userIdStr, ',') ||
+            !std::getline(ss, bookIdStr, ',') ||
+            !std::getline(ss, borrowDateStr, ',') ||
+            !std::getline(ss, returnedStr, ','))
+        {
+            std::cout << "Invalid borrow record data format in " << filename << ".\n";
+            file.close();
+            return false;
+        }
+
+        try
+        {
+            int recordId = std::stoi(recordIdStr);
+            int userId = std::stoi(userIdStr);
+            int bookId = std::stoi(bookIdStr);
+            bool returned = std::stoi(returnedStr) != 0;
+
+            Date borrowDate;
+            if (!parseDate(borrowDateStr, borrowDate))
+            {
+                std::cout << "Invalid borrow date in " << filename << ".\n";
+                file.close();
+                return false;
+            }
+
+            BorrowRecord record(recordId, userId, bookId, borrowDate);
+            if (returned && std::getline(ss, returnDateStr, ','))
+            {
+                Date returnDate;
+                if (parseDate(returnDateStr, returnDate))
+                {
+                    record.markReturned(returnDate);
+                }
+            }
+
+            borrowRecords.push_back(record);
+            maxRecordId = std::max(maxRecordId, recordId);
+        }
+        catch (const std::exception&)
+        {
+            std::cout << "Invalid numeric value in " << filename << ".\n";
+            file.close();
+            return false;
+        }
+    }
+
+    file.close();
+    nextRecordId = maxRecordId + 1;
+    return true;
 }
 
-bool Library::saveBorrowRecords(const std::string&) const
+bool Library::saveBorrowRecords(const std::string& filename) const
 {
-    return false;
+    std::ofstream file(filename);
+
+    if (!file.is_open())
+    {
+        std::cout << "Unable to open " << filename << " for writing.\n";
+        return false;
+    }
+
+    file << "recordId,userId,bookId,borrowDate,returned,returnDate\n";
+
+    auto formatDate = [](const Date& date) {
+        std::stringstream ss;
+        ss << std::setfill('0')
+           << std::setw(4) << static_cast<int>(date.year()) << '-'
+           << std::setw(2) << static_cast<unsigned>(date.month()) << '-'
+           << std::setw(2) << static_cast<unsigned>(date.day());
+        return ss.str();
+    };
+
+    for (const auto& record : borrowRecords)
+    {
+        file << record.getRecordId() << ','
+             << record.getUserId() << ','
+             << record.getBookId() << ','
+             << formatDate(record.getBorrowDate()) << ','
+             << (record.isReturned() ? 1 : 0) << ',';
+
+        if (record.isReturned())
+        {
+            file << formatDate(record.getReturnDate());
+        }
+
+        file << '\n';
+    }
+
+    file.close();
+    return true;
 }

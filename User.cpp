@@ -52,6 +52,11 @@ void User::returnBook(int bookId)
     borrowedBooksId.erase(it);
 }
 
+void User::clearBorrowedBooks()
+{
+    borrowedBooksId.clear();
+}
+
 // display
 void User::display() const
 {

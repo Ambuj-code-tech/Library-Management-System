@@ -32,11 +32,15 @@ LibraryManagement/
 ├── BorrowRecord.cpp
 ├── Library.h
 ├── Library.cpp
-├── books.txt
-├── users.txt
-├── records.txt
+├── books.csv
+├── users.csv
+├── records.csv
 ```
 
 ## Status
 
-🚧 Currently under development.
+✅ Library Management System is complete and includes:
+- book add/remove/search
+- user register/remove/display
+- borrow/return tracking with persistent records
+- reset and file-based save/load support

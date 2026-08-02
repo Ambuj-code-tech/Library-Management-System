@@ -21,6 +21,7 @@ public:
 
     void borrowBook(int bookId);
     void returnBook(int bookId);
+    void clearBorrowedBooks();
 
     void display() const;
 };
