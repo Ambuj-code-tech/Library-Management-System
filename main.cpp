@@ -5,7 +5,7 @@
 void displayMenu()
 {
     std::cout
-        << "========== LIBRARY =========="
+        << "========== LIBRARY ==========\n"
         << "1.  Add Book\n"
         << "2.  Remove Book\n"
         << "3.  Search Book\n"

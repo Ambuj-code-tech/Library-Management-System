@@ -1,5 +1,8 @@
+#include <fstream>
 #include <iostream>
 #include <iomanip>
+#include <sstream>
+#include <string>
 
 #include "Library.h"
 
@@ -283,22 +286,201 @@ void Library::displayBorrowRecords() const
 // File handling
 bool Library::loadBooks(const std::string& filename)
 {
-    return false;
+    std::ifstream file(filename);
+
+    if (!file.is_open())
+    {
+        std::cout << "Unable to open " << filename << ".\n";
+        return false;
+    }
+
+    books.clear();
+
+    std::string line;
+    if (!std::getline(file, line))
+    {
+        file.close();
+        return true;
+    }
+
+    while (std::getline(file, line))
+    {
+        if (line.empty())
+        {
+            continue;
+        }
+
+        std::stringstream ss(line);
+
+        std::string idStr;
+        std::string title;
+        std::string author;
+        std::string category;
+        std::string availableStr;
+
+        if (!std::getline(ss, idStr, ',') ||
+            !std::getline(ss, title, ',') ||
+            !std::getline(ss, author, ',') ||
+            !std::getline(ss, category, ',') ||
+            !std::getline(ss, availableStr, ','))
+        {
+            std::cout << "Invalid book data format in " << filename << ".\n";
+            file.close();
+            return false;
+        }
+
+        try
+        {
+            int id = std::stoi(idStr);
+            bool available = std::stoi(availableStr);
+            books.emplace_back(id, title, author, category, available);
+        }
+        catch (const std::exception&)
+        {
+            std::cout << "Invalid numeric value in " << filename << ".\n";
+            file.close();
+            return false;
+        }
+    }
+
+    file.close();
+    return true;
 }
 
-bool Library::saveBooks(const std::string&) const
+bool Library::saveBooks(const std::string& filename) const
 {
-    return false;
+    std::ofstream file(filename);
+
+    if (!file.is_open())
+    {
+        std::cout << "Unable to open " << filename << " for writing.\n";
+        return false;
+    }
+
+    file << "id,title,author,category,available\n";
+
+    for (const auto& book : books)
+    {
+        file << book.getBookId() << ','
+             << book.getTitle() << ','
+             << book.getAuthor() << ','
+             << book.getCategory() << ','
+             << (book.isAvailable() ? 1 : 0) << '\n';
+    }
+
+    file.close();
+    return true;
 }
 
-bool Library::loadUsers(const std::string&)
+bool Library::loadUsers(const std::string& filename)
 {
-    return false;
+    std::ifstream file(filename);
+
+    if (!file.is_open())
+    {
+        std::cout << "Unable to open " << filename << " .\n";
+        return false;
+    }
+
+    users.clear();
+
+    std::string line;
+    if (!std::getline(file, line))
+    {
+        file.close();
+        return true;
+    }
+
+    while (std::getline(file, line))
+    {
+        if (line.empty())
+        {
+            continue;
+        }
+
+        std::stringstream ss(line);
+
+        std::string strUserId;
+        std::string username;
+        std::string borrowedBooksField;
+
+        if (!std::getline(ss, strUserId, ',') ||
+            !std::getline(ss, username, ',') ||
+            !std::getline(ss, borrowedBooksField, ','))
+        {
+            std::cout << "Invalid user data format in " << filename << " .\n";
+            file.close();
+            return false;
+        }
+
+        try
+        {
+            int id = std::stoi(strUserId);
+            User user(id, username);
+
+            if (!borrowedBooksField.empty())
+            {
+                std::stringstream borrowedStream(borrowedBooksField);
+                std::string bookIdStr;
+
+                while (std::getline(borrowedStream, bookIdStr, ';'))
+                {
+                    if (!bookIdStr.empty())
+                    {
+                        user.borrowBook(std::stoi(bookIdStr));
+                    }
+                }
+            }
+
+            users.push_back(user);
+        }
+        catch (const std::exception&)
+        {
+            std::cout << "Invalid numeric value in " << filename << " .\n";
+            file.close();
+            return false;
+        }
+    }
+
+    file.close();
+    return true;
 }
 
-bool Library::saveUsers(const std::string&) const
+bool Library::saveUsers(const std::string& filename) const
 {
-    return false;
+    std::ofstream file(filename);
+
+    if (!file.is_open())
+    {
+        std::cout << "Unable to open " << filename << " for writing.\n";
+        return false;
+    }
+
+    file << "id,username,borrowedBooks\n";
+
+    for (const auto& user : users)
+    {
+        file << user.getUserId() << ',' << user.getUsername();
+
+        const auto& borrowedBooks = user.getBorrowedBooks();
+        if (!borrowedBooks.empty())
+        {
+            file << ',';
+            for (size_t i = 0; i < borrowedBooks.size(); i++)
+            {
+                if (i > 0)
+                {
+                    file << ';';
+                }
+                file << borrowedBooks[i];
+            }
+        }
+
+        file << '\n';
+    }
+
+    file.close();
+    return true;
 }
 
 bool Library::loadBorrowRecords(const std::string&)
