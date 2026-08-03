@@ -4,8 +4,8 @@
 
 #include "BorrowRecord.h"
 
-constexpr int BorrowPeriod = 14;
-
+constexpr int BorrowPeriod = 30;
+constexpr int finePerDay = 5;
 // parametrized constructor
 BorrowRecord::BorrowRecord(
     int recordId,
@@ -80,7 +80,7 @@ double BorrowRecord::calculateFine(const Date& today, double finePerDay) const
 
     auto overdueDays = SysDays(today) - SysDays(dueDate);
 
-    return overdueDays.count() * (double)finePerDay;
+    return overdueDays.count() * finePerDay;
 }
 
 void BorrowRecord::display() const
