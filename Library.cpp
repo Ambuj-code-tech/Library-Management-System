@@ -289,6 +289,7 @@ void Library::displayBorrowRecords() const
           << std::setw(10) << "Book ID"
           << std::setw(15) << "Borrow Date"
           << std::setw(15) << "Due Date"
+          << std::setw(15) << "Fine"
           << '\n';
 
     std::cout << std::string(60, '-') << '\n';
