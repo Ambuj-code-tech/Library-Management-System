@@ -1,11 +1,13 @@
 #include <chrono>
 #include <iostream>
 #include <iomanip>
+# include <chrono>
 
 #include "BorrowRecord.h"
 
 constexpr int BorrowPeriod = 30;
 constexpr int finePerDay = 5;
+
 // parametrized constructor
 BorrowRecord::BorrowRecord(
     int recordId,
@@ -69,7 +71,7 @@ bool BorrowRecord::isOverdue(const Date& today) const
     return SysDays(today) > SysDays(dueDate);
 }
 
-double BorrowRecord::calculateFine(const Date& today, double finePerDay) const
+double BorrowRecord::calculateFine(const Date& today) const
 {
     // If the book has already been returned or is not overdue,
     // there is no fine.
@@ -85,12 +87,18 @@ double BorrowRecord::calculateFine(const Date& today, double finePerDay) const
 
 void BorrowRecord::display() const
 {
+    const auto now = std::chrono::system_clock::now();
+    const auto current_day = std::chrono::floor<std::chrono::days>(now);
+    const Date today{current_day};
+
+    const double fine = calculateFine(today);
+
     std::cout << std::left
               << std::setw(10) << recordId
               << std::setw(10) << userId
               << std::setw(10) << bookId;
 
-    std::cout << std::setfill('0');
+    std::cout << std::right << std::setfill('0');
 
     std::cout << std::setw(4) << static_cast<int>(borrowDate.year()) << '-'
               << std::setw(2) << static_cast<unsigned>(borrowDate.month()) << '-'
@@ -100,5 +108,9 @@ void BorrowRecord::display() const
               << std::setw(2) << static_cast<unsigned>(dueDate.month()) << '-'
               << std::setw(2) << static_cast<unsigned>(dueDate.day());
 
-    std::cout << std::setfill(' ') << '\n';
+    std::cout << std::left << std::setfill(' ')
+              << "    "
+              << std::fixed << std::setprecision(2)
+              << std::setw(10) << fine
+              << '\n';
 }

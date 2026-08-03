@@ -46,10 +46,7 @@ public:
     // utility
     bool isOverdue(const Date& today) const;
 
-    double calculateFine(
-        const Date& today,
-        double finePerDay
-    ) const;
+    double calculateFine(const Date& today) const;
 
     void display() const;
 };

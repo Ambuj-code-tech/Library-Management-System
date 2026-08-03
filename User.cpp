@@ -61,9 +61,13 @@ void User::clearBorrowedBooks()
 void User::display() const
 {
     std::cout << std::left
-              << std::setw(18) << "User ID:" << userId << '\n'
-              << std::setw(18) << "Username:" << username << '\n'
-              << std::setw(18) << "Borrowed Books:\n";
+              << std::setw(12) << "User ID"
+              << std::setw(20) << "Username"
+              << "Borrowed Books\n";
+
+    std::cout << std::string(60, '-') << '\n';
+    std::cout << std::setw(12) << userId
+              << std::setw(20) << username;
 
     if (borrowedBooksId.empty())
     {
@@ -74,7 +78,7 @@ void User::display() const
     for (int i = 0, n = borrowedBooksId.size(); i < n; i++)
     {
         std::cout << borrowedBooksId[i];
-        if (i < n-1)
+        if (i < n - 1)
         {
             std::cout << ", ";
         }

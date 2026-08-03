@@ -9,8 +9,11 @@
 # Debug files
 *.pdb
 
-# VS Code settings (optional)
+# VS Code settings
 .vscode/
 
 # Build folders
 build/
+
+# csv files
+*.csv
