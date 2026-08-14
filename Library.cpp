@@ -429,13 +429,15 @@ bool Library::loadUsers(const std::string& filename)
         std::string borrowedBooksField;
 
         if (!std::getline(ss, strUserId, ',') ||
-            !std::getline(ss, username, ',') ||
-            !std::getline(ss, borrowedBooksField, ','))
+            !std::getline(ss, username, ','))
         {
             std::cout << "Invalid user data format in " << filename << " .\n";
             file.close();
             return false;
         }
+
+        // Read remaining content as borrowed books (no delimiter required)
+        std::getline(ss, borrowedBooksField);
 
         try
         {
