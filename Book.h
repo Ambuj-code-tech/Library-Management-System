@@ -28,6 +28,9 @@ public:
     bool isAvailable() const;
 
     void setAvailability(bool status);
+    void setTitle(const std::string& title);
+    void setAuthor(const std::string& author);
+    void setCategory(const std::string& category);
 
     void display() const;
 };

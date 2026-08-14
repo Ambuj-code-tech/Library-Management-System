@@ -24,6 +24,8 @@ public:
     void addBook(const Book& book);
     bool removeBook(int bookId);
 
+    bool updateBook(int bookId, const std::string& title, const std::string& author, const std::string& category);
+
     Book* findBookById(int bookId);
     const Book* findBookById(int bookId) const;
 
@@ -32,6 +34,8 @@ public:
     // User operations
     void addUser(const User& user);
     bool removeUser(int userId);
+
+    bool updateUser(int userId, const std::string& username);
 
     User* findUserById(int userId);
     const User* findUserById(int userId) const;

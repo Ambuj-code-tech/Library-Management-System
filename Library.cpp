@@ -478,22 +478,16 @@ bool Library::saveUsers(const std::string& filename) const
 
     for (const auto& user : users)
     {
-        file << user.getUserId() << ',' << user.getUsername();
-
+        file << user.getUserId() << ',' << user.getUsername() << ',';
         const auto& borrowedBooks = user.getBorrowedBooks();
-        if (!borrowedBooks.empty())
+        for (size_t i = 0; i < borrowedBooks.size(); i++)
         {
-            file << ',';
-            for (size_t i = 0; i < borrowedBooks.size(); i++)
+            if (i > 0)
             {
-                if (i > 0)
-                {
-                    file << ';';
-                }
-                file << borrowedBooks[i];
+                file << ';';
             }
+            file << borrowedBooks[i];
         }
-
         file << '\n';
     }
 
@@ -608,6 +602,34 @@ bool Library::loadBorrowRecords(const std::string& filename)
 
     file.close();
     nextRecordId = maxRecordId + 1;
+    return true;
+}
+
+bool Library::updateBook(int bookId, const std::string& title, const std::string& author, const std::string& category)
+{
+    Book* book = findBookById(bookId);
+    if (book == nullptr)
+    {
+        std::cout << "Book not found.\n";
+        return false;
+    }
+
+    book->setTitle(title);
+    book->setAuthor(author);
+    book->setCategory(category);
+    return true;
+}
+
+bool Library::updateUser(int userId, const std::string& username)
+{
+    User* user = findUserById(userId);
+    if (user == nullptr)
+    {
+        std::cout << "User not found.\n";
+        return false;
+    }
+
+    user->setUsername(username);
     return true;
 }
 

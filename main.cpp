@@ -18,7 +18,9 @@ void displayMenu()
         << "10. Display Users\n"
         << "11. Reset User Data\n"
         << "12. Display Borrow Records\n"
-        << "13. Exit\n"
+        << "13. Update Book\n"
+        << "14. Update User\n"
+        << "15. Exit\n"
         << "Enter your choice: ";
 }
 
@@ -228,7 +230,51 @@ int main()
                 lib.displayBorrowRecords();
                 break;
             }
-            case 13:  // Exit
+            case 13: // Update Book
+            {
+                int bookId;
+                std::cout << "Book Id: ";
+                std::cin >> bookId;
+                std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+
+                std::string title;
+                std::string author;
+                std::string category;
+
+                std::cout << "New Title: ";
+                std::getline(std::cin, title);
+                std::cout << "New Author: ";
+                std::getline(std::cin, author);
+                std::cout << "New Category: ";
+                std::getline(std::cin, category);
+
+                if (lib.updateBook(bookId, title, author, category))
+                {
+                    lib.saveBooks("books.csv");
+                    std::cout << "Book updated successfully.\n";
+                }
+                break;
+            }
+            case 14: // Update User
+            {
+                int userId;
+                std::cout << "User Id: ";
+                std::cin >> userId;
+                std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+
+                std::string username;
+                std::cout << "New Username: ";
+                std::getline(std::cin, username);
+
+                if (lib.updateUser(userId, username))
+                {
+                    lib.saveUsers("users.csv");
+                    std::cout << "User updated successfully.\n";
+                }
+
+                break;
+            }
+            case 15:  // Exit
             {
                 lib.saveBooks("books.csv");
                 lib.saveUsers("users.csv");

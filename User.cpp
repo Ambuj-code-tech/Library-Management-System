@@ -57,6 +57,11 @@ void User::clearBorrowedBooks()
     borrowedBooksId.clear();
 }
 
+void User::setUsername(const std::string& name)
+{
+    username = name;
+}
+
 // display
 void User::display() const
 {

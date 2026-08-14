@@ -23,6 +23,8 @@ public:
     void returnBook(int bookId);
     void clearBorrowedBooks();
 
+    void setUsername(const std::string& name);
+
     void display() const;
 };
 

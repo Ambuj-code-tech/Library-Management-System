@@ -54,3 +54,18 @@ void Book::setAvailability(bool status)
 {
     this->available = status;
 }
+
+void Book::setTitle(const std::string& title)
+{
+    this->title = title;
+}
+
+void Book::setAuthor(const std::string& author)
+{
+    this->author = author;
+}
+
+void Book::setCategory(const std::string& category)
+{
+    this->category = category;
+}
