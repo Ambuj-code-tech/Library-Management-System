@@ -138,11 +138,17 @@ void Library::displayAllUsers() const
         return;
     }
 
-    int sl = 1;
+    // header
+    std::cout << std::left
+              << std::setw(12) << "User ID"
+              << std::setw(20) << "Username"
+              << "Borrowed Books\n";
 
+    std::cout << std::string(60, '-') << '\n';
+
+    // body
     for (const auto& user : users)
     {
-        std::cout << sl++ << '\n';
         user.display();
     }
 }

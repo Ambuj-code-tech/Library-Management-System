@@ -65,12 +65,6 @@ void User::setUsername(const std::string& name)
 // display
 void User::display() const
 {
-    std::cout << std::left
-              << std::setw(12) << "User ID"
-              << std::setw(20) << "Username"
-              << "Borrowed Books\n";
-
-    std::cout << std::string(60, '-') << '\n';
     std::cout << std::setw(12) << userId
               << std::setw(20) << username;
 
